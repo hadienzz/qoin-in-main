@@ -260,59 +260,61 @@ const Top100Page = () => {
                 <div className="divide-y">
                   {rankedMerchants
                     .slice(3, 20)
-                    .map((merchant: any, idx: number) => {
-                      const rank = idx + 4;
-                      const topBadge = getTopBadge(rank);
+                    .map(
+                      (merchant: (typeof rankedMerchants)[0], idx: number) => {
+                        const rank = idx + 4;
+                        const topBadge = getTopBadge(rank);
 
-                      return (
-                        <div
-                          key={merchant.id}
-                          className="p-4 md:p-5 lg:p-6 hover:bg-gray-50 transition-colors"
-                        >
-                          <div className="flex items-center gap-3 md:gap-4">
-                            {/* Rank */}
-                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                              <span className="text-lg md:text-xl font-bold text-[#333]">
-                                {rank}
-                              </span>
-                            </div>
-
-                            {/* Merchant Info */}
-                            <div className="flex-1 min-w-0">
-                              <h3 className="text-sm md:text-base lg:text-lg font-bold text-[#333] truncate">
-                                {merchant.name}
-                              </h3>
-                              <div className="flex items-center gap-2 md:gap-3 mt-1 flex-wrap">
-                                <span className="text-xs md:text-sm text-[#8D8D8D]">
-                                  {merchant.type}
-                                </span>
-                                <span className="text-xs text-[#8D8D8D]">
-                                  •
-                                </span>
-                                <span className="text-xs md:text-sm text-[#8D8D8D] flex items-center gap-1">
-                                  ⭐ {merchant.rating}
-                                </span>
-                                <span className="text-xs text-[#8D8D8D]">
-                                  •
-                                </span>
-                                <span className="text-xs md:text-sm text-green-600 flex items-center gap-1">
-                                  <TrendingUp className="w-3 h-3" />+
-                                  {merchant.growth}%
+                        return (
+                          <div
+                            key={merchant.id}
+                            className="p-4 md:p-5 lg:p-6 hover:bg-gray-50 transition-colors"
+                          >
+                            <div className="flex items-center gap-3 md:gap-4">
+                              {/* Rank */}
+                              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                <span className="text-lg md:text-xl font-bold text-[#333]">
+                                  {rank}
                                 </span>
                               </div>
-                            </div>
 
-                            {/* Score */}
-                            <div className="text-right flex-shrink-0">
-                              <p className="text-base md:text-lg lg:text-xl font-bold text-primary">
-                                {merchant.score}
-                              </p>
-                              <p className="text-xs text-[#8D8D8D]">Score</p>
+                              {/* Merchant Info */}
+                              <div className="flex-1 min-w-0">
+                                <h3 className="text-sm md:text-base lg:text-lg font-bold text-[#333] truncate">
+                                  {merchant.name}
+                                </h3>
+                                <div className="flex items-center gap-2 md:gap-3 mt-1 flex-wrap">
+                                  <span className="text-xs md:text-sm text-[#8D8D8D]">
+                                    {merchant.type}
+                                  </span>
+                                  <span className="text-xs text-[#8D8D8D]">
+                                    •
+                                  </span>
+                                  <span className="text-xs md:text-sm text-[#8D8D8D] flex items-center gap-1">
+                                    ⭐ {merchant.rating}
+                                  </span>
+                                  <span className="text-xs text-[#8D8D8D]">
+                                    •
+                                  </span>
+                                  <span className="text-xs md:text-sm text-green-600 flex items-center gap-1">
+                                    <TrendingUp className="w-3 h-3" />+
+                                    {merchant.growth}%
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Score */}
+                              <div className="text-right flex-shrink-0">
+                                <p className="text-base md:text-lg lg:text-xl font-bold text-primary">
+                                  {merchant.score}
+                                </p>
+                                <p className="text-xs text-[#8D8D8D]">Score</p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      }
+                    )}
                 </div>
               )}
             </CardContent>

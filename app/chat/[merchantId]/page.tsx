@@ -20,8 +20,16 @@ import {
   Paperclip,
 } from "lucide-react";
 
+interface MerchantData {
+  id: string;
+  name: string;
+  avatar: string;
+  isOnline: boolean;
+  lastSeen: string;
+}
+
 // Mock merchant data
-const mockMerchants: Record<string, any> = {
+const mockMerchants: Record<string, MerchantData> = {
   m1: {
     id: "m1",
     name: "Warung Makan Bu Siti",

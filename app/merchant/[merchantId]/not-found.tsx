@@ -31,7 +31,7 @@ const MerchantNotFound = () => {
                   Kembali ke Beranda
                 </Button>
               </Link>
-              <Link href="/merchant">
+              <Link href="/merchant/type/Semua">
                 <Button
                   variant="outline"
                   className="w-full sm:w-auto border-primary text-primary hover:bg-primary hover:text-white"

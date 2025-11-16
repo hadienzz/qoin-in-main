@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { formatPrice } from "@/lib/format-price";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 
 interface PickupConfirmationProps {
   merchantName: string;
@@ -20,6 +21,9 @@ const PickupConfirmation = ({
   const [pickupCode, setPickupCode] = useState("");
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [copied, setCopied] = useState(false);
+
+  const router = useRouter();
+  const { paymentId } = useParams();
 
   useEffect(() => {
     // Generate unique pickup code
@@ -181,7 +185,7 @@ const PickupConfirmation = ({
         </Button>
         <Button
           className="flex-1 h-12"
-          onClick={() => (window.location.href = `/merchant/${merchantName}`)}
+          onClick={() => router.push(`/merchant/${paymentId}`)}
         >
           Pesan Lagi
         </Button>

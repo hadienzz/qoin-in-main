@@ -7,6 +7,7 @@ import { DisplayMerchantResponse } from "@/types";
 import LocationBadge from "./location-badge";
 import { Skeleton } from "../ui/skeleton";
 import { Card, CardContent, CardHeader } from "../ui/card";
+import type { Article } from "@/content/articles";
 
 interface ProductSectionProps {
   title?: string;
@@ -17,6 +18,7 @@ interface ProductSectionProps {
   isInspirated?: boolean;
   displayMerchant?: DisplayMerchantResponse;
   isLoading?: boolean;
+  articles?: Article[];
 }
 
 const ProductSection = ({
@@ -28,6 +30,7 @@ const ProductSection = ({
   isInspirated,
   displayMerchant,
   isLoading,
+  articles = [],
 }: ProductSectionProps) => {
   const safeDisplayMerchant = Array.isArray(displayMerchant?.data)
     ? displayMerchant.data
@@ -57,8 +60,8 @@ const ProductSection = ({
 
       {isInspirated && (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
-          {Array.from({ length: 3 }).map((_, idx) => (
-            <InspiratedItem key={idx} />
+          {articles.map((article) => (
+            <InspiratedItem key={article.id} article={article} />
           ))}
         </div>
       )}

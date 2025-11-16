@@ -13,7 +13,10 @@ interface PickupConfirmationProps {
   total: number;
 }
 
-const PickupConfirmation = ({ merchantName, total }: PickupConfirmationProps) => {
+const PickupConfirmation = ({
+  merchantName,
+  total,
+}: PickupConfirmationProps) => {
   const [pickupCode, setPickupCode] = useState("");
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [copied, setCopied] = useState(false);
@@ -172,13 +175,13 @@ const PickupConfirmation = ({ merchantName, total }: PickupConfirmationProps) =>
         <Button
           variant="outline"
           className="flex-1 h-12"
-          onClick={() => window.location.href = "/"}
+          onClick={() => (window.location.href = "/")}
         >
           Kembali ke Beranda
         </Button>
         <Button
           className="flex-1 h-12"
-          onClick={() => window.location.href = `/merchant/${merchantName}`}
+          onClick={() => (window.location.href = `/merchant/${merchantName}`)}
         >
           Pesan Lagi
         </Button>

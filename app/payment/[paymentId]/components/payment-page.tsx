@@ -13,7 +13,11 @@ interface PaymentProductsProps {
   isPickup?: boolean;
 }
 
-const PaymentProducts = ({ total, handlePage, isPickup = false }: PaymentProductsProps) => {
+const PaymentProducts = ({
+  total,
+  handlePage,
+  isPickup = false,
+}: PaymentProductsProps) => {
   const { label } = useCountdown();
   const [grandTotal, setGrandTotal] = useState<string | null>(null);
   useEffect(() => {

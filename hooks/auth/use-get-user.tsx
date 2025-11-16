@@ -1,70 +1,61 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import axiosInstance from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useEffect } from "react";
-
-const STORAGE_KEY = "__qoin_user_cache__";
-
-const readInitialUser = () => {
-  if (typeof window === "undefined") return undefined;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return undefined;
-    const parsed = JSON.parse(raw);
-    return parsed?.data ?? undefined;
-  } catch {
-    return undefined;
-  }
-};
 
 const useGetUser = () => {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      try {
-        const response = await axiosInstance.get("/api/auth/user", {
-          withCredentials: true, // kalau perlu
-        });
-        return response.data; // misal { id, name, email, ... }
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 401) {
-          // BUKAN error fatal, cuma artinya belum login
-          return null;
-        }
-        throw error;
-      }
-    },
-    initialData: typeof window !== "undefined" ? readInitialUser() : undefined,
-    staleTime: 0, // selalu up-to-date dulu aja
-    refetchOnMount: true,
-    refetchOnWindowFocus: false,
-    retry: (failureCount, error) => {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        return false;
-      }
-      return failureCount < 2;
-    },
-    gcTime: 5 * 60 * 1000,
-  });
+  const [data, setData] = useState<Record<string, unknown> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
-  // Sinkron ke localStorage
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    try {
-      if (data) {
-        window.localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify({ data, updatedAt: Date.now() })
-        );
-      } else {
-        // data === null -> belum login, hapus cache
-        window.localStorage.removeItem(STORAGE_KEY);
+    const fetchUser = async () => {
+      // Check if logged in from localStorage
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+      if (!isLoggedIn) {
+        setIsLoading(false);
+        return;
       }
-    } catch {}
-  }, [data]);
 
-  return { data, isLoading, isError, isLoggedIn: !!data };
+      // Try to get cached user first
+      const cachedUser = localStorage.getItem("user");
+      if (cachedUser) {
+        try {
+          setData(JSON.parse(cachedUser));
+        } catch {}
+      }
+
+      // Fetch fresh data from API
+      try {
+        const response = await axiosInstance.get("/api/auth/user");
+        const userData = response.data;
+        setData(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
+        setIsError(false);
+      } catch (error: unknown) {
+        const axiosError = error as { response?: { status?: number } };
+        if (axiosError?.response?.status === 401) {
+          // Not logged in - clear data
+          setData(null);
+          localStorage.removeItem("user");
+          localStorage.removeItem("isLoggedIn");
+        } else {
+          setIsError(true);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  return {
+    data,
+    isLoading,
+    isError,
+    isLoggedIn: !!data,
+  };
 };
 
 export default useGetUser;

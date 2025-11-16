@@ -1,9 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+"use client";
+
+import { useState } from "react";
 import { useFormik } from "formik";
 import { schema } from "./use-signup";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
-import { useRouter } from "next/navigation";
 
 interface LoginValues {
   email: string;
@@ -11,53 +12,50 @@ interface LoginValues {
 }
 
 const useLogin = () => {
-  const queryClient = useQueryClient();
-  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin = async (values: LoginValues) => {
-    const response = await axiosInstance.post("/api/auth/signin", values, {
-      withCredentials: true, // kalau backend beda domain/port
-    });
-    return response.data; // pastikan backend balikin data user di sini
-  };
+    setIsSubmitting(true);
+    try {
+      const response = await axiosInstance.post("/api/auth/signin", values);
+      const userData = response.data;
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: handleLogin,
-    onSuccess: (data) => {
-      // 1. Update cache React Query
-      queryClient.setQueryData(["user"], data);
-
-      // 2. (opsional) sync ke localStorage biar konsisten
+      // Save to localStorage
       if (typeof window !== "undefined") {
-        window.localStorage.setItem(
-          "__qoin_user_cache__",
-          JSON.stringify({ data, updatedAt: Date.now() })
-        );
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("isLoggedIn", "true");
       }
 
-      // 3. Toast + redirectt
       toast.success("Login berhasil!");
 
-      router.push("/"); // ganti sesuai route-mu
-      router.refresh(); // biar server component baca cookie baru
-    },
-    onError: () => {
-      toast.error("Gagal melakukan login");
-    },
-  });
+      // Redirect to home
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 500);
+    } catch (error: unknown) {
+      let message = "Gagal melakukan login";
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        message = axiosError.response?.data?.message || message;
+      }
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    onSubmit: (values: LoginValues) => {
-      mutate(values);
-    },
+    onSubmit: handleLogin,
     validationSchema: schema,
   });
 
-  return { formik, isSubmitting: isPending };
+  return { formik, isSubmitting };
 };
 
 export default useLogin;

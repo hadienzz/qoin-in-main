@@ -1,7 +1,7 @@
 "use client";
 
+import { useState } from "react";
 import axiosInstance from "@/lib/axios";
-import { useMutation } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { toast } from "sonner";
 import * as yup from "yup";
@@ -24,34 +24,37 @@ interface UseSignupProps {
 }
 
 const useSignup = ({ onSuccessCallback }: UseSignupProps = {}) => {
-  const signupRequest = async (values: SignupValues) => {
-    const response = await axiosInstance.post("/api/auth/signup", values);
-    return response.data;
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: signupRequest,
-    onError: () => {
-      return toast.error("Gagal melakukan signup");
-    },
-    onSuccess: () => {
+  const handleSignup = async (values: SignupValues) => {
+    setIsSubmitting(true);
+    try {
+      await axiosInstance.post("/api/auth/signup", values);
       toast.success("Signup berhasil! Silahkan login.");
       if (onSuccessCallback) {
         onSuccessCallback();
       }
-    },
-  });
+    } catch (error: unknown) {
+      let message = "Gagal melakukan signup";
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        message = axiosError.response?.data?.message || message;
+      }
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const formik = useFormik<SignupValues>({
     initialValues: { email: "", password: "" },
     validationSchema: schema,
-    onSubmit: async (values) => {
-      mutate(values);
-      //   formik.resetForm();
-    },
+    onSubmit: handleSignup,
   });
 
-  return { formik, isSubmitting: isPending };
+  return { formik, isSubmitting };
 };
 
 export default useSignup;

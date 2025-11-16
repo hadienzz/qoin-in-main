@@ -1,26 +1,41 @@
+"use client";
+
+import { useState } from "react";
 import axiosInstance from "@/lib/axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const useLogout = () => {
-  const queryClient = useQueryClient();
+  const [isPending, setIsPending] = useState(false);
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async () => {
-      const response = await axiosInstance.post("/api/auth/logout");
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.removeQueries({ queryKey: ["user"] });
-      return toast.success("Logout berhasil!");
-    },
-    onError: () => {
-      return toast.error("Logout gagal!");
-    },
-  });
+  const handleLogout = async () => {
+    setIsPending(true);
+    try {
+      await axiosInstance.post("/api/auth/logout");
 
-  const handleLogout = () => {
-    mutate();
+      // Clear localStorage
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("user");
+        localStorage.removeItem("isLoggedIn");
+      }
+
+      toast.success("Logout berhasil!");
+
+      // Redirect to home
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 500);
+    } catch (error: unknown) {
+      let message = "Logout gagal!";
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        message = axiosError.response?.data?.message || message;
+      }
+      toast.error(message);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return {

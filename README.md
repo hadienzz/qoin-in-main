@@ -63,5 +63,3 @@ NEXT_PUBLIC_BACKEND_URL=https://qoin-backend.vercel.app
 ```bash
 npm run dev
 ```
-
-//buatin deskripsi project ini buatr readme ini

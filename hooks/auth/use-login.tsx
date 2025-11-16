@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { schema } from "./use-signup";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
+import { useRouter } from "next/navigation";
 
 interface LoginValues {
   email: string;
@@ -11,42 +12,37 @@ interface LoginValues {
 
 const useLogin = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const handleLogin = async (values: LoginValues) => {
-    const response = await axiosInstance.post("/api/auth/signin", values);
-
-    // Save token to localStorage if backend sends it
-    if (response.data?.token) {
-      localStorage.setItem("authToken", response.data.token);
-    }
-
-    return response.data;
+    const response = await axiosInstance.post("/api/auth/signin", values, {
+      withCredentials: true, // kalau backend beda domain/port
+    });
+    return response.data; // pastikan backend balikin data user di sini
   };
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (values: LoginValues) => handleLogin(values),
+    mutationFn: handleLogin,
     onSuccess: (data) => {
-      console.log("Login success, response:", data);
-      console.log("Cookies after login:", document.cookie);
+      // 1. Update cache React Query
+      queryClient.setQueryData(["user"], data);
 
-      // Clear old cache first
+      // 2. (opsional) sync ke localStorage biar konsisten
       if (typeof window !== "undefined") {
-        localStorage.removeItem("__qoin_user_cache__");
+        window.localStorage.setItem(
+          "__qoin_user_cache__",
+          JSON.stringify({ data, updatedAt: Date.now() })
+        );
       }
 
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      // 3. Toast + redirect
       toast.success("Login berhasil!");
 
-      // Redirect to home page with full reload to ensure fresh state
-      setTimeout(() => {
-        if (typeof window !== "undefined") {
-          window.location.href = "/";
-        }
-      }, 500);
+      router.push("/"); // ganti sesuai route-mu
+      router.refresh(); // biar server component baca cookie baru
     },
-    onError: (error) => {
-      console.error("Login error:", error);
-      return toast.error("Gagal melakukan login");
+    onError: () => {
+      toast.error("Gagal melakukan login");
     },
   });
 
@@ -55,8 +51,7 @@ const useLogin = () => {
       email: "",
       password: "",
     },
-
-    onSubmit: async (values: LoginValues) => {
+    onSubmit: (values: LoginValues) => {
       mutate(values);
     },
     validationSchema: schema,

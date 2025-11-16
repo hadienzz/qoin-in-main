@@ -17,17 +17,12 @@ Input transaksi, cetak struk, kelola produk, dan pantau penjualan kapan pun.
 🎁 Loyalty & Poin Otomatis
 Setiap transaksi menghasilkan poin. Pelanggan bisa menukarkan poin menjadi voucher.
 
-🎫 QR Voucher System
-Merchant bisa membuat voucher digital, pelanggan cukup scan QR untuk redeem.
-
 📊 Dashboard Insightful
 Lihat performa penjualan, pelanggan paling aktif, hingga produk terlaris secara real-time.
 
-👤 Multi-Merchant Ready
-Satu akun bisa digunakan untuk banyak cabang atau beberapa toko sekaligus.
 
 🔐 Keamanan Modern
-Login aman menggunakan Supabase Auth + JWT, server-client terhubung tanpa ribet.
+Login aman menggunakan Supabase Auth + JWT, server-client terhubung.
 
 🎯 Target Pengguna
 
@@ -63,3 +58,5 @@ NEXT_PUBLIC_BACKEND_URL=https://qoin-backend.vercel.app
 ```bash
 npm run dev
 ```
+
+## LINK REPOSITORY BACKEND : https://github.com/hadienzz/qoin-backend

@@ -17,7 +17,7 @@ const HeroSection = () => {
       <PageContainer>
         <header className="flex flex-col items-center max-w-full md:max-w-[680px] lg:max-w-[741px] mx-auto text-center px-4 md:px-0">
           <motion.h1
-            className="text-secondary text-2xl md:text-3xl lg:text-[40px] font-extrabold leading-tight"
+            className="text-primary text-2xl md:text-3xl lg:text-[40px] font-extrabold leading-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}

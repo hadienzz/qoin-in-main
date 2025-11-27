@@ -10,15 +10,29 @@ import { useEffect, useState } from "react";
 interface PaymentProductsProps {
   total: number;
   handlePage: (page: string) => void;
+  isPickup?: boolean;
 }
 
-const PaymentProducts = ({ total, handlePage }: PaymentProductsProps) => {
+const PaymentProducts = ({
+  total,
+  handlePage,
+  isPickup = false,
+}: PaymentProductsProps) => {
   const { label } = useCountdown();
   const [grandTotal, setGrandTotal] = useState<string | null>(null);
+  
   useEffect(() => {
     const grandTotal = localStorage.getItem("grandTotal");
     setGrandTotal(grandTotal);
   }, []);
+
+  const handleCheckStatus = () => {
+    if (isPickup) {
+      handlePage("pickup-confirmation");
+    } else {
+      handlePage("searching");
+    }
+  };
 
   return (
     // width tetap mengikuti container parent (tidak diubah)
@@ -27,7 +41,7 @@ const PaymentProducts = ({ total, handlePage }: PaymentProductsProps) => {
         <div className="space-y-1">
           <p className="text-muted-foreground">Total Pembayaran</p>
           <p className="text-primary lg:text-lg text-base font-bold">
-            Rp {formatPrice(total ?? 0)}
+            Rp {formatPrice(grandTotal ?? 0)}
           </p>
         </div>
         <div className="text-right space-y-1">
@@ -82,7 +96,7 @@ const PaymentProducts = ({ total, handlePage }: PaymentProductsProps) => {
         <div className="pb-8">
           <Button
             className="font-bold lg:text-xl mt-4 w-full bg-[linear-gradient(81deg,#FD6700_-18.45%,#FF944B_29.81%)] py-6 group relative overflow-hidden flex justify-center items-center"
-            onClick={() => handlePage("searching")}
+            onClick={handleCheckStatus}
           >
             <span className="absolute inset-0 bg-[linear-gradient(79deg,#FD6700_64.73%,#FF944B_114.39%)] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out" />
 

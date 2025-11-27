@@ -11,6 +11,8 @@ import useOpenModal from "@/hooks/landing-page/use-open-modal";
 import DialogLogin from "@/components/shared/dialog-login";
 import DialogSignup from "@/components/shared/dialog-signup";
 import DialogLoginEmail from "@/components/shared/dialog-login-email";
+import useStartChat from "@/hooks/merchant/use-start-chat";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 type AsideCardContent = {
   icon: React.ReactElement;
@@ -36,13 +38,25 @@ const AsideCard = ({
   } = useOpenModal();
   const isAuthenticated = !!user;
 
+  const {
+    isOpen: chatIsOpen,
+    openChat,
+    closeChat,
+    merchantInfo,
+    messages,
+    inputMessage,
+    setInputMessage,
+    sendMessage,
+    handleKeyPress,
+    messagesEndRef,
+  } = useStartChat();
+
   const handleChatClick = () => {
     if (!isAuthenticated) {
       openModal("default");
       return;
     }
-    // Logic untuk chat dengan merchant
-    console.log("Open chat with merchant");
+    openChat();
   };
 
   const asideCardContent: AsideCardContent[] = [
@@ -108,6 +122,77 @@ const AsideCard = ({
       />
       <DialogSignup open={signUpIsOpen} onClose={onCloseSignup} />
       <DialogLoginEmail open={signInIsOpen} onClose={closeModal} />
+
+      {/* Dialog Chat */}
+      <Dialog open={chatIsOpen} onOpenChange={(open) => !open && closeChat()}>
+        <DialogContent className="max-w-md w-full p-0 overflow-hidden">
+          <div className="flex flex-col h-[480px]">
+            <div className="px-4 py-3 border-b flex items-center gap-3 bg-white">
+              <div className="w-9 h-9 rounded-full bg-gray-200" />
+              <div className="flex-1 min-w-0">
+                <DialogTitle className="text-sm font-semibold truncate">
+                  {merchantInfo.name}
+                </DialogTitle>
+                <p className="text-xs text-[#8D8D8D] truncate">
+                  {merchantInfo.lastSeen}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-3 space-y-3 text-xs">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${
+                    message.sender === "user" ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-3 py-2 shadow-sm ${
+                      message.sender === "user"
+                        ? "bg-primary text-white"
+                        : "bg-white text-[#333] border border-gray-200"
+                    }`}
+                  >
+                    <p className="break-words">{message.text}</p>
+                    <p
+                      className={`mt-1 text-[10px] ${
+                        message.sender === "user"
+                          ? "text-orange-100"
+                          : "text-[#8D8D8D]"
+                      }`}
+                    >
+                      {message.time}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+
+            <div className="px-3 py-3 border-t bg-white">
+              <div className="flex items-center gap-2">
+                <input
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Ketik pesan..."
+                  className="flex-1 text-xs border border-gray-200 rounded-full px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+                <button
+                  type="button"
+                  onClick={() => sendMessage()}
+                  disabled={!inputMessage.trim()}
+                  className="px-3 py-2 text-xs rounded-full bg-primary text-white disabled:opacity-60"
+                >
+                  Kirim
+                </button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
     </Card>
   );
 };

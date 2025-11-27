@@ -13,7 +13,7 @@ const urbanist = Urbanist({
 export const metadata: Metadata = {
   title: "Qoin.In",
   description: "Jadi bagian pendukung UMKM Indonesia dengan Qoin.In!",
-  icons: "/icon.svg",
+  icons: "/logo.svg",
 };
 
 export default function RootLayout({

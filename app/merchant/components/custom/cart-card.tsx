@@ -12,6 +12,7 @@ import useGetUser from "@/hooks/auth/use-get-user";
 import useOpenModal from "@/hooks/landing-page/use-open-modal";
 import DialogLogin from "@/components/shared/dialog-login";
 import DialogLoginEmail from "@/components/shared/dialog-login-email";
+import DialogSignup from "@/components/shared/dialog-signup";
 
 interface CartCardProps {
   className?: string;
@@ -31,27 +32,34 @@ const CartCard = ({
   const { merchantId } = useParams();
   const router = useRouter();
   const { data } = useGetUser();
-  const { openModal, defaultModalIsOpen, closeModal, signInIsOpen } =
-    useOpenModal();
+  const {
+    openModal,
+    defaultModalIsOpen,
+    closeModal,
+    signInIsOpen,
+    signUpIsOpen,
+    onCloseSignup,
+  } = useOpenModal();
   const isAuthenticated = !!data;
-
+  const paymentId = crypto.randomUUID();
   const handleToPayment = () => {
     if (!isAuthenticated) {
       console.log("modal opened");
       openModal("default");
       return;
     }
-    return router.push(`/payment/${merchantId}`);
+    return router.push(`/payment/${paymentId}`);
   };
+
   return (
     <>
       <Card className={className}>
         <CardContent className="p-5 md:p-6">
-          <CardHeader className="flex items-center justify-between p-0 mb-4">
-            <CardTitle className="text-base lg:text-xl font-bold">
+          <CardHeader className="mb-4 flex items-center justify-between p-0">
+            <CardTitle className="text-base font-bold lg:text-xl">
               Keranjang
             </CardTitle>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               {totals?.totalQty ?? 0} item
             </p>
           </CardHeader>
@@ -72,24 +80,15 @@ const CartCard = ({
           </div>
           {cart.length > 0 && (
             <Button
-              className="font-bold text-base md:text-lg lg:text-xl mt-5 w-full bg-[linear-gradient(81deg,#FD6700_-18.45%,#FF944B_29.81%)] py-5 md:py-6 group relative overflow-hidden flex justify-center items-center"
+              className="group relative mt-5 flex w-full items-center justify-center overflow-hidden bg-[linear-gradient(81deg,#FD6700_-18.45%,#FF944B_29.81%)] py-5 text-base font-bold md:py-6 md:text-lg lg:text-xl"
               onClick={handleToPayment}
             >
-              <span className="absolute inset-0 bg-[linear-gradient(79deg,#FD6700_64.73%,#FF944B_114.39%)] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out" />
+              <span className="absolute inset-0 translate-x-[-100%] bg-[linear-gradient(79deg,#FD6700_64.73%,#FF944B_114.39%)] transition-transform duration-500 ease-in-out group-hover:translate-x-0" />
 
               <p className="z-100">Cek Keranjang</p>
-              <Cart className="group-hover:translate-x-2 duration-500 transition-all" />
+              <Cart className="transition-all duration-500 group-hover:translate-x-2" />
             </Button>
           )}
-
-          {/* {cart.length > 0 && (
-          <div className="flex items-center justify-between mt-4 pt-4 border-t">
-          <span className="font-medium">Total</span>
-          <span className="font-bold">
-          Rp. {formatPrice(totals.totalPrice)}
-          </span>
-          </div>
-          )} */}
         </CardContent>
       </Card>
       <DialogLogin
@@ -98,6 +97,7 @@ const CartCard = ({
         openModal={openModal}
       />
       <DialogLoginEmail open={signInIsOpen} onClose={closeModal} />
+      <DialogSignup open={signUpIsOpen} onClose={onCloseSignup} />
     </>
   );
 };

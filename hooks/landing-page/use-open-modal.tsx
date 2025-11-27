@@ -9,7 +9,10 @@ const useOpenModal = () => {
   const signInIsOpen = modalIsOpen === "signin";
   const defaultModalIsOpen = modalIsOpen === "default";
 
-  const openModal = (open: string) => setModalIsOpen(open);
+  const openModal = (open: string) => {
+    setModalIsOpen(open);
+    console.log("Modal opened:", open);
+  };
   const closeModal = () => setModalIsOpen(null);
 
   const onCloseSignup = () => setModalIsOpen(null);

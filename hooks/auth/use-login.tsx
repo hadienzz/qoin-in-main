@@ -34,6 +34,7 @@ const useLogin = () => {
       }, 500);
     } catch (error: unknown) {
       let message = "Gagal melakukan login";
+
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
           response?: { data?: { message?: string } };

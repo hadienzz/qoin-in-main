@@ -6,6 +6,9 @@ import { ProductFormModal } from "../dashboard/product-form-modal";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import useAddProduct from "@/hooks/dashboard/use-add-product";
+import useDeleteStock from "@/hooks/dashboard/use-delete-stock";
+import useEditStock from "@/hooks/dashboard/use-edit-stock";
+import useToggleDisplayStock from "@/hooks/dashboard/use-toggle-display-stock";
 import { Merchant } from "@/types";
 
 interface InventoryPageProps {
@@ -16,6 +19,17 @@ interface InventoryPageProps {
 export function InventoryPage({ merchant }: InventoryPageProps) {
   const { formik, handleCloseModal, handleOpenModal, openModal } =
     useAddProduct();
+
+  const { deleteStock } = useDeleteStock();
+  const {
+    openModal: openEditModal,
+    handleOpenModal: handleOpenEditModal,
+    handleCloseModal: handleCloseEditModal,
+    formik: editFormik,
+    isPending: isEditing,
+  } = useEditStock();
+
+  const { toggleDisplay } = useToggleDisplayStock();
 
   const merchantStocks = Array.isArray(merchant?.stocks)
     ? merchant?.stocks
@@ -44,19 +58,28 @@ export function InventoryPage({ merchant }: InventoryPageProps) {
       />
 
       <DataTable
-        title="Products"
-        columns={[
-          { key: "name", label: "Product Name" },
-          { key: "quantity", label: "Quantity" },
-          { key: "price", label: "Price" },
-        ]}
-        data={merchantStocks}
+        data={merchantStocks.map((stock) => ({
+          ...stock,
+          onToggleDisplay: async (next: boolean) => {
+            if (!stock.id) return;
+            await toggleDisplay({ id: stock.id, is_display: next });
+          },
+          // onDelete, onEdit tetap sama
+        }))}
       />
 
+      {/* Add product modal */}
       <ProductFormModal
         isOpen={openModal}
         onClose={handleCloseModal}
         formik={formik}
+      />
+
+      {/* Edit product modal - reuse ProductFormModal layout but bind editFormik */}
+      <ProductFormModal
+        isOpen={openEditModal}
+        onClose={handleCloseEditModal}
+        formik={editFormik as any}
       />
     </div>
   );

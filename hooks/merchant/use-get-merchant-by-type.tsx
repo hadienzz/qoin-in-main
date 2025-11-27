@@ -7,7 +7,6 @@ import type { Merchant } from "@/types";
 export const MERCHANT_TYPE_QUERY_KEY = "merchant-type";
 
 const useGetMerchantByType = (rawType: string | null) => {
-  // type di-searching selalu huruf kecil
   const type = rawType ? rawType.toLowerCase() : null;
 
   const enabled = !!type && type.trim().length > 0 && type !== "semua";
@@ -21,7 +20,7 @@ const useGetMerchantByType = (rawType: string | null) => {
     enabled,
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `/api/merchant/type/${encodeURIComponent(type as string)}`
+        `/api/merchant/type/${encodeURIComponent(type as string)}`,
       );
       return response.data;
     },

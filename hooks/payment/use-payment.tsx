@@ -6,6 +6,7 @@ const usePayment = () => {
   const onDefaultPage = onPage === "default";
   const onSearchingPage = onPage === "searching";
   const onDriverPage = onPage === "driver";
+  const onPickupConfirmationPage = onPage === "pickup-confirmation";
   const [isSearching, setIsSearching] = useState(false);
 
   // Bootstrap from localStorage (persisted state)
@@ -45,6 +46,7 @@ const usePayment = () => {
     onDefaultPage,
     onSearchingPage,
     onDriverPage,
+    onPickupConfirmationPage,
     onPage,
     handlePage,
     handleOffPaymentPage,

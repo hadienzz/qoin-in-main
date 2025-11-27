@@ -72,13 +72,13 @@ const Header = ({ openModal }: HeaderProps) => {
   return (
     <Section className="mx-auto border-b">
       <PageContainer>
-        <div className="h-[102px] items-center justify-between hidden lg:flex">
+        <div className="hidden h-[102px] items-center justify-between lg:flex">
           <Link href={"/"}>
             <div className="flex items-center gap-3">
               <div className="relative h-10 w-10">
                 <LogoIcon />
               </div>
-              <h1 className="text-[28px] font-extrabold ">Qoin.in</h1>
+              <h1 className="text-[28px] font-extrabold">Qoin.in</h1>
             </div>
           </Link>
           <div className="hidden lg:block">
@@ -109,18 +109,18 @@ const Header = ({ openModal }: HeaderProps) => {
           <div>
             {showSkeleton ? (
               <div className="flex items-center gap-5">
-                <div className="h-12 w-[190px] rounded-2xl border animate-pulse bg-gray-100" />
-                <div className="h-10 w-10 rounded-full animate-pulse bg-gray-100" />
-                <div className="h-12 w-12 rounded-full animate-pulse bg-gray-100" />
+                <div className="h-12 w-[190px] animate-pulse rounded-2xl border bg-gray-100" />
+                <div className="h-10 w-10 animate-pulse rounded-full bg-gray-100" />
+                <div className="h-12 w-12 animate-pulse rounded-full bg-gray-100" />
               </div>
             ) : showAuth ? (
               <div className="flex items-center gap-5">
                 <button
                   onClick={() => router.push("/qoin")}
-                  className="flex items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-2 hover:bg-orange-100 hover:border-orange-300 transition-colors cursor-pointer"
+                  className="flex cursor-pointer items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-2 transition-colors hover:border-orange-300 hover:bg-orange-100"
                 >
                   <div
-                    className="grid place-items-center h-9 w-9 rounded-full bg-orange-100"
+                    className="grid h-9 w-9 place-items-center rounded-full bg-orange-100"
                     suppressHydrationWarning
                   >
                     <DollarCoin className="text-primary" />
@@ -135,18 +135,18 @@ const Header = ({ openModal }: HeaderProps) => {
                 <button
                   type="button"
                   onClick={() => router.push("/notifications")}
-                  className="relative p-2 rounded-full hover:bg-muted transition-colors"
+                  className="hover:bg-muted relative rounded-full p-2 transition-colors"
                   aria-label="Notifications"
                 >
                   <Bell className="h-6 w-6" />
                   {notifCount > 0 && (
-                    <span className="absolute -top-1 -right-1 grid place-items-center h-5 w-5 rounded-full bg-orange-500 text-white text-[10px] font-semibold">
+                    <span className="absolute -top-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-orange-500 text-[10px] font-semibold text-white">
                       {Math.min(99, notifCount)}
                     </span>
                   )}
                 </button>
                 {/* Avatar */}
-                <div className="h-12 w-12 rounded-full overflow-hidden bg-gray-200 border">
+                <div className="h-12 w-12 overflow-hidden rounded-full border bg-gray-200">
                   {avatarUrl ? (
                     <Image
                       src={avatarUrl}
@@ -158,15 +158,21 @@ const Header = ({ openModal }: HeaderProps) => {
                   ) : (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="h-full w-full grid place-items-center text-sm font-semibold text-gray-600">
+                        <button className="grid h-full w-full place-items-center text-sm font-semibold text-gray-600">
                           {displayInitial}
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem
                           onClick={() => router.push("/user/merchant")}
+                          className="hover:bg-[#fd6700]"
                         >
                           Toko Saya
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => router.push("/user/followed-merchant")}
+                        >
+                          Toko Diikuti
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => router.push("/profile")}
@@ -188,7 +194,7 @@ const Header = ({ openModal }: HeaderProps) => {
               <div className="flex items-center gap-5">
                 <BorderButton icon={<DollarCoin />}>Cobain</BorderButton>
                 <PrimaryButton
-                  className="py-2.5 px-5"
+                  className="px-5 py-2.5"
                   onClick={() => openModal && openModal("default")}
                 >
                   Masuk
@@ -212,10 +218,10 @@ const Header = ({ openModal }: HeaderProps) => {
             {showAuth && (
               <button
                 onClick={() => router.push("/qoin")}
-                className="flex items-center gap-2 rounded-xl border border-orange-200 bg-orange-50 px-2.5 py-1.5 hover:bg-orange-100 transition-colors"
+                className="flex items-center gap-2 rounded-xl border border-orange-200 bg-orange-50 px-2.5 py-1.5 transition-colors hover:bg-orange-100"
               >
-                <DollarCoin className="w-5 h-5 text-primary" />
-                <span className="text-sm font-bold text-primary">
+                <DollarCoin className="text-primary h-5 w-5" />
+                <span className="text-primary text-sm font-bold">
                   {qoinBalance}
                 </span>
               </button>
@@ -223,12 +229,12 @@ const Header = ({ openModal }: HeaderProps) => {
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger
                 aria-label="Open menu"
-                className="p-2 rounded-md border"
+                className="rounded-md border p-2"
               >
                 <Menu className="h-5 w-5" />
               </SheetTrigger>
               <SheetContent side="left" className="p-0">
-                <SheetHeader className="p-4 border-b">
+                <SheetHeader className="border-b p-4">
                   <SheetTitle>
                     <div className="flex items-center gap-2">
                       <div className="relative h-8 w-8">
@@ -271,8 +277,8 @@ const Header = ({ openModal }: HeaderProps) => {
                   <div className="mt-6 flex flex-col gap-3">
                     {showSkeleton ? (
                       <div className="flex items-center justify-between gap-4">
-                        <div className="h-12 flex-1 rounded-2xl border animate-pulse bg-gray-100" />
-                        <div className="h-10 w-10 rounded-full animate-pulse bg-gray-100" />
+                        <div className="h-12 flex-1 animate-pulse rounded-2xl border bg-gray-100" />
+                        <div className="h-10 w-10 animate-pulse rounded-full bg-gray-100" />
                       </div>
                     ) : showAuth ? (
                       <div className="flex items-center justify-between gap-4">
@@ -281,9 +287,9 @@ const Header = ({ openModal }: HeaderProps) => {
                             setIsSheetOpen(false);
                             router.push("/qoin");
                           }}
-                          className="flex items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50 px-3 py-2 hover:bg-orange-100 hover:border-orange-300 transition-colors"
+                          className="flex items-center gap-3 rounded-2xl border border-orange-200 bg-orange-50 px-3 py-2 transition-colors hover:border-orange-300 hover:bg-orange-100"
                         >
-                          <div className="grid place-items-center h-8 w-8 rounded-full bg-orange-100">
+                          <div className="grid h-8 w-8 place-items-center rounded-full bg-orange-100">
                             <DollarCoin className="text-primary" />
                           </div>
                           <div className="leading-tight">
@@ -301,19 +307,19 @@ const Header = ({ openModal }: HeaderProps) => {
                             setIsSheetOpen(false);
                             router.push("/notifications");
                           }}
-                          className="relative p-2 rounded-full hover:bg-muted transition-colors"
+                          className="hover:bg-muted relative rounded-full p-2 transition-colors"
                           aria-label="Notifications"
                         >
                           <Bell className="h-5 w-5" />
                           {notifCount > 0 && (
-                            <span className="absolute -top-1 -right-1 grid place-items-center h-5 w-5 rounded-full bg-orange-500 text-white text-[10px] font-semibold">
+                            <span className="absolute -top-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-orange-500 text-[10px] font-semibold text-white">
                               {Math.min(99, notifCount)}
                             </span>
                           )}
                         </button>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <button className="h-10 w-10 rounded-full overflow-hidden bg-gray-200 border">
+                            <button className="h-10 w-10 overflow-hidden rounded-full border bg-gray-200">
                               {avatarUrl ? (
                                 <Image
                                   src={avatarUrl}
@@ -323,7 +329,7 @@ const Header = ({ openModal }: HeaderProps) => {
                                   className="h-full w-full object-cover"
                                 />
                               ) : (
-                                <div className="h-full w-full grid place-items-center text-xs text-gray-600 font-semibold">
+                                <div className="grid h-full w-full place-items-center text-xs font-semibold text-gray-600">
                                   {displayInitial}
                                 </div>
                               )}
@@ -362,12 +368,12 @@ const Header = ({ openModal }: HeaderProps) => {
                       <>
                         <BorderButton
                           icon={<DollarCoin />}
-                          className="border-primary text-secondary hover:text-secondary hover:bg-white cursor-pointer px-4 py-2 text-base font-semibold"
+                          className="border-primary text-secondary hover:text-secondary cursor-pointer px-4 py-2 text-base font-semibold hover:bg-white"
                         >
                           Cobain
                         </BorderButton>
                         <PrimaryButton
-                          className="py-2 px-4"
+                          className="px-4 py-2"
                           onClick={() => openModal && openModal("default")}
                         >
                           Masuk

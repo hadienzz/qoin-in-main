@@ -7,15 +7,9 @@ import Store from "@/components/icons/store";
 import { MapPin, ShieldCheck } from "lucide-react";
 import Box from "@/components/icons/box";
 import Vespa from "@/components/icons/vespa";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import DialogSuccess from "./dialog-success";
+import useSuccessTransaction from "@/hooks/payment/use-success-transaction";
 
 type OrderItem = {
   id: string;
@@ -23,6 +17,7 @@ type OrderItem = {
   quantity: number;
   price: number;
 };
+
 interface DriverPageProps {
   merchantName?: string;
   total: number;
@@ -62,43 +57,43 @@ const stepItem: Omit<StepItemProps, "active">[] = [
 const StepItem = ({ icon, title, desc, active, idx }: StepItemProps) => {
   return (
     <div key={title} className="flex items-start gap-3">
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col items-center justify-center">
         <div
-          className={`flex items-center justify-center p-[5px] rounded-full ${
-            active ? "text-white bg-primary" : "border-[#E5E7EB] bg-white"
+          className={`flex items-center justify-center rounded-full p-[5px] ${
+            active ? "bg-primary text-white" : "border-[#E5E7EB] bg-white"
           }`}
         >
-          <span className="rounded-full mx-auto size-[25px] flex items-center justify-center">
+          <span className="mx-auto flex size-[25px] items-center justify-center rounded-full">
             {icon}
           </span>
         </div>
         {!!idx && idx < 3 && <div className="h-10 w-px bg-[#E5E7EB]" />}
       </div>
       <div>
-        <p className="text-sm md:text-base lg:text-lg font-semibold text-[#333]">
+        <p className="text-sm font-semibold text-[#333] md:text-base lg:text-lg">
           {title}
         </p>
-        <p className="text-sm md:text-base lg:text-lg text-[#8D8D8D]">{desc}</p>
+        <p className="text-sm text-[#8D8D8D] md:text-base lg:text-lg">{desc}</p>
       </div>
     </div>
   );
 };
 
 const DriverPage = ({ merchantName }: DriverPageProps) => {
-  const router = useRouter();
   const [items, setItems] = useState<OrderItem[]>([]);
   const [activeSteps, setActiveSteps] = useState<boolean[]>(() =>
-    new Array(stepItem.length).fill(false)
+    new Array(stepItem.length).fill(false),
   );
+
+  const { showArrivedDialog, setShowArrivedDialog } = useSuccessTransaction();
 
   const totalPrice = items.reduce(
     (acc, cur) => acc + cur.price * cur.quantity,
-    0
+    0,
   );
 
   const tipsFee = totalPrice * 0.01;
   const grandTotal = totalPrice + tipsFee + 20000;
-  const [showArrivedDialog, setShowArrivedDialog] = useState(false);
 
   useEffect(() => {
     try {
@@ -109,9 +104,7 @@ const DriverPage = ({ merchantName }: DriverPageProps) => {
           setItems(parsed);
         }
       }
-    } catch {
-      // fall back to mock
-    }
+    } catch {}
   }, []);
 
   useEffect(() => {
@@ -141,7 +134,6 @@ const DriverPage = ({ merchantName }: DriverPageProps) => {
       });
     }, 3000);
 
-    // clearInterval(interval);
     return () => clearInterval(interval);
   }, []);
 
@@ -153,12 +145,12 @@ const DriverPage = ({ merchantName }: DriverPageProps) => {
           width={400}
           height={300}
           alt="Map"
-          className="w-full bg-contain h-[400] rounded-lg"
+          className="h-[400] w-full rounded-lg bg-contain"
         />
 
         {/* Shipping timeline */}
-        <div className="rounded-[24px] border border-[#F0F0F0] bg-white p-5 space-y-4">
-          <h2 className="text-sm md:text-base lg:text-lg font-semibold text-[#333]">
+        <div className="space-y-4 rounded-[24px] border border-[#F0F0F0] bg-white p-5">
+          <h2 className="text-sm font-semibold text-[#333] md:text-base lg:text-lg">
             Informasi Pengiriman
           </h2>
           <div className="space-y-4">
@@ -177,8 +169,8 @@ const DriverPage = ({ merchantName }: DriverPageProps) => {
       {/* Right: Driver info + order detail */}
       <div className="space-y-4">
         {/* Driver card */}
-        <div className="rounded-[24px] border border-[#F0F0F0] bg-white p-4 space-y-4">
-          <h3 className="text-sm md:text-base lg:text-lg font-semibold text-[#333]">
+        <div className="space-y-4 rounded-[24px] border border-[#F0F0F0] bg-white p-4">
+          <h3 className="text-sm font-semibold text-[#333] md:text-base lg:text-lg">
             Informasi Driver
           </h3>
           <div className="flex items-center gap-3">
@@ -188,23 +180,23 @@ const DriverPage = ({ merchantName }: DriverPageProps) => {
               height={40}
               src={"/images/mamat.png"}
               alt="Foto mamat"
-              className="rounded-full border-2 border-primary"
+              className="border-primary rounded-full border-2"
             />
             <div className="space-y-0.5">
-              <p className="text-sm md:text-base lg:text-lg font-semibold text-[#333]">
+              <p className="text-sm font-semibold text-[#333] md:text-base lg:text-lg">
                 Mamat
               </p>
-              <p className="text-sm md:text-base lg:text-lg text-[#8D8D8D]">
+              <p className="text-sm text-[#8D8D8D] md:text-base lg:text-lg">
                 4.9 ⭐
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-[35px]">
-            <div className="bg-[#FFF7ED] p-[15px] rounded-md">
+            <div className="rounded-md bg-[#FFF7ED] p-[15px]">
               <Vespa className="text-primary" />
             </div>
-            <div className="space-y-1 text-sm md:text-base lg:text-lg text-[#8D8D8D]">
+            <div className="space-y-1 text-sm text-[#8D8D8D] md:text-base lg:text-lg">
               <p>BI 1234 XYZ</p>
               <p>Honda Beat</p>
             </div>
@@ -212,15 +204,15 @@ const DriverPage = ({ merchantName }: DriverPageProps) => {
         </div>
 
         {/* Order details */}
-        <div className="rounded-[24px] border border-[#F0F0F0] bg-white p-4 space-y-3">
-          <h3 className="text-sm md:text-base lg:text-lg font-semibold text-[#333]">
+        <div className="space-y-3 rounded-[24px] border border-[#F0F0F0] bg-white p-4">
+          <h3 className="text-sm font-semibold text-[#333] md:text-base lg:text-lg">
             Detail Pesanan
           </h3>
-          <div className="space-y-1 text-sm md:text-base lg:text-lg text-[#8D8D8D]">
+          <div className="space-y-1 text-sm text-[#8D8D8D] md:text-base lg:text-lg">
             <p>ID Pesanan</p>
-            <p className="text-[#333] font-medium">ORD-1726990776370</p>
+            <p className="font-medium text-[#333]">ORD-1726990776370</p>
           </div>
-          <div className="space-y-1 text-sm md:text-base lg:text-lg text-[#8D8D8D]">
+          <div className="space-y-1 text-sm text-[#8D8D8D] md:text-base lg:text-lg">
             <p>Alamat Pengiriman</p>
             <p className="leading-relaxed">
               Universitas Telkom Jakarta - Kampus Minangkabau, Jl. Minangkabau
@@ -230,7 +222,7 @@ const DriverPage = ({ merchantName }: DriverPageProps) => {
           </div>
           <div className="my-2 h-px bg-[#F3F4F6]" />
 
-          <div className="space-y-1 text-sm md:text-base lg:text-lg text-[#333]">
+          <div className="space-y-1 text-sm text-[#333] md:text-base lg:text-lg">
             {items.map((it) => (
               <div key={it.name} className="flex items-center justify-between">
                 <span>
@@ -260,78 +252,40 @@ const DriverPage = ({ merchantName }: DriverPageProps) => {
         </div>
 
         {/* Merchant info (dummy) */}
-        <div className="rounded-[24px] border border-[#F0F0F0] bg-white p-4 text-sm md:text-base lg:text-lg flex items-center justify-between">
+        <div className="flex items-center justify-between rounded-[24px] border border-[#F0F0F0] bg-white p-4 text-sm md:text-base lg:text-lg">
           <div>
-            <p className="font-semibold text-[#333] flex items-center gap-2">
-              <Store className="w-4 h-4 text-primary" />
+            <p className="flex items-center gap-2 font-semibold text-[#333]">
+              <Store className="text-primary h-4 w-4" />
               {merchantName}
             </p>
-            <p className="text-primary mt-1 cursor-pointer flex items-center gap-1">
-              <FluentChat className="w-4 h-4 text-primary" />
+            <p className="text-primary mt-1 flex cursor-pointer items-center gap-1">
+              <FluentChat className="text-primary h-4 w-4" />
               Hubungi Merchant
             </p>
           </div>
         </div>
 
         {/* Safety info */}
-        <div className="rounded-[24px] border border-primary bg-[#FFF7ED] p-4 text-sm md:text-base lg:text-lg flex items-center justify-between">
+        <div className="border-primary flex items-center justify-between rounded-[24px] border bg-[#FFF7ED] p-4 text-sm md:text-base lg:text-lg">
           <div>
-            <p className="font-semibold text-[#333] flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-primary" />
+            <p className="flex items-center gap-2 font-semibold text-[#333]">
+              <ShieldCheck className="text-primary h-4 w-4" />
               Keamanan Terjamin
             </p>
-            <p className="text-[#8D8D8D] mt-1">
+            <p className="mt-1 text-[#8D8D8D]">
               Driver terverifikasi & asuransi perjalanan aktif
             </p>
           </div>
-          <button className="mt-2 rounded-full border border-primary px-4 py-1 text-sm md:text-base lg:text-lg font-semibold text-primary bg-white">
+          <button className="border-primary text-primary mt-2 rounded-full border bg-white px-4 py-1 text-sm font-semibold md:text-base lg:text-lg">
             Butuh Bantuan?
           </button>
         </div>
       </div>
-
-      <Dialog open={showArrivedDialog} onOpenChange={setShowArrivedDialog}>
-        <DialogContent className="max-w-sm rounded-3xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl md:text-2xl font-bold text-[#333]">
-              Pesanan kamu sudah sampai! 🎉
-            </DialogTitle>
-            <DialogDescription className="mt-3 text-sm md:text-base text-[#8D8D8D] leading-relaxed">
-              Terima kasih sudah berbelanja dengan Qoin. Semoga kamu puas dengan
-              pesanan dan pelayanannya. Jangan lupa beri rating dan ulasan untuk
-              mendukung UMKM favoritmu.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-3 mt-4">
-            <button
-              className="w-full rounded-full bg-primary hover:bg-primary/90 py-3 md:py-3.5 text-sm md:text-base font-semibold text-white transition-colors duration-200"
-              onClick={() => {
-                setShowArrivedDialog(false);
-                router.push(`/payment/${merchantName}/rating`);
-              }}
-            >
-              Beri Rating & Ulasan
-            </button>
-            <button
-              className="w-full rounded-full border-2 border-[#E5E7EB] hover:border-primary hover:text-primary py-3 md:py-3.5 text-sm md:text-base font-semibold text-[#333] transition-colors duration-200"
-              onClick={() => {
-                try {
-                  localStorage.removeItem("orderStatus");
-                  localStorage.removeItem("qoin.cart");
-                  localStorage.removeItem("grandTotal");
-                } catch (err) {
-                  console.log(err);
-                }
-
-                setShowArrivedDialog(false);
-                router.push("/");
-              }}
-            >
-              Lewati
-            </button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <DialogSuccess
+        merchantName={merchantName}
+        showArrivedDialog={showArrivedDialog}
+        setShowArrivedDialog={setShowArrivedDialog}
+      />
     </div>
   );
 };

@@ -47,7 +47,6 @@ export default function Home() {
         displayMerchantLoading={merchantIsLoading}
       />
       <ImageHero />
-      {/* <LastSearch /> */}
       <DiscountSection
         displayMerchant={displayMerchant}
         displayMerchantLoading={merchantIsLoading}

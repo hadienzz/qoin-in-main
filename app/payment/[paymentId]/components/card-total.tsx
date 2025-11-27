@@ -13,15 +13,16 @@ const REDEEMABLE_QOIN = 150; // static placeholder
 
 interface CardTotalProps {
   handlePage?: (page: string) => void;
+  isPickup?: boolean;
 }
 
-const CardTotal = ({ handlePage }: CardTotalProps) => {
+const CardTotal = ({ handlePage, isPickup = false }: CardTotalProps) => {
   const { cart, totals } = useAddProductToCart();
   const [redeem, setRedeem] = useState(false);
 
   const subtotal = totals.totalPrice ?? 0;
   const serviceFee = Math.round(subtotal * SERVICE_FEE_RATE);
-  const shipping = SHIPPING_COST;
+  const shipping = isPickup ? 0 : SHIPPING_COST;
   const discount = redeem
     ? Math.min(REDEEMABLE_QOIN, subtotal + serviceFee + shipping)
     : 0;
@@ -84,10 +85,12 @@ const CardTotal = ({ handlePage }: CardTotalProps) => {
             <span className="text-muted-foreground">Biaya Layanan (1%)</span>
             <span className="font-medium">Rp {formatPrice(serviceFee)}</span>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Biaya Pengiriman</span>
-            <span className="font-medium">Rp {formatPrice(shipping)}</span>
-          </div>
+          {!isPickup && (
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Biaya Pengiriman</span>
+              <span className="font-medium">Rp {formatPrice(shipping)}</span>
+            </div>
+          )}
         </div>
 
         {/* Redeem Qoin */}

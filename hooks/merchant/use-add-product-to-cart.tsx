@@ -10,6 +10,8 @@ export type CartItem = {
   name: string;
   price: number;
   photo_url: string;
+  merchant_id: string;
+  merchant_name?: string;
   quantity: number;
 };
 
@@ -61,17 +63,18 @@ const useAddProductToCart = () => {
     setCart((prev) => {
       const idx = prev.findIndex((it) => it.id === productId);
       if (idx !== -1) {
-        // increment quantity only
         const next = [...prev];
         next[idx] = { ...next[idx], quantity: next[idx].quantity + 1 };
         return next;
       }
-      // add new item
+
       const newItem: CartItem = {
         id: stock.id,
         name: stock.name,
         price: stock.price,
         photo_url: stock.photo_url,
+        merchant_id: stock.merchant_id,
+        merchant_name: merchant?.name,
         quantity: 1,
       };
       return [...prev, newItem];
@@ -81,8 +84,8 @@ const useAddProductToCart = () => {
   const increment = (productId: string) => {
     setCart((prev) =>
       prev.map((it) =>
-        it.id === productId ? { ...it, quantity: it.quantity + 1 } : it
-      )
+        it.id === productId ? { ...it, quantity: it.quantity + 1 } : it,
+      ),
     );
   };
 
@@ -92,9 +95,9 @@ const useAddProductToCart = () => {
         .map((it) =>
           it.id === productId
             ? { ...it, quantity: Math.max(0, it.quantity - 1) }
-            : it
+            : it,
         )
-        .filter((it) => it.quantity > 0)
+        .filter((it) => it.quantity > 0),
     );
   };
 
@@ -108,7 +111,7 @@ const useAddProductToCart = () => {
     const totalQty = cart.reduce((acc, it) => acc + it.quantity, 0);
     const totalPrice = cart.reduce(
       (acc, it) => acc + it.quantity * it.price,
-      0
+      0,
     );
     return { totalQty, totalPrice };
   }, [cart]);

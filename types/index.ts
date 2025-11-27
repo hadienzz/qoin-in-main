@@ -1,3 +1,5 @@
+import { profile } from "console";
+
 export interface Stock {
   id: string;
   name: string;
@@ -9,6 +11,7 @@ export interface Stock {
   description: string;
   created_at: string; // ISO string (Date.toISOString())
   updated_at: string;
+  is_display?: boolean;
 }
 
 export interface Merchant {
@@ -63,4 +66,12 @@ export interface DisplayMerchantResponse {
   message: string;
   status: string;
   data: DisplayMerchantType[];
+}
+
+export interface LikedMerchant {
+  merchant: {
+    profilePhotoUrl: string | null;
+    id: string;
+    name: string;
+  };
 }

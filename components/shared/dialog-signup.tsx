@@ -12,7 +12,6 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import useSignup from "@/hooks/auth/use-signup";
-import useOpenModal from "@/hooks/landing-page/use-open-modal";
 
 interface DialogSignupProps {
   open: boolean;
@@ -20,15 +19,10 @@ interface DialogSignupProps {
 }
 
 const DialogSignup = ({ open, onClose }: DialogSignupProps) => {
-  const { openModal } = useOpenModal();
-
   const { formik, isSubmitting } = useSignup({
     onSuccessCallback: () => {
       onClose();
       formik.resetForm();
-      setTimeout(() => {
-        openModal("login");
-      }, 300);
     },
   });
 
@@ -43,7 +37,7 @@ const DialogSignup = ({ open, onClose }: DialogSignupProps) => {
             alt="Logo"
             className="mx-auto"
           />
-          <DialogTitle className="font-bold text-base lg:text-3xl text-secondary text-center">
+          <DialogTitle className="text-secondary text-center text-base font-bold lg:text-3xl">
             Daftar dulu yuk, biar bisa dukung UMKM favoritmu
           </DialogTitle>
         </DialogHeader>
@@ -61,7 +55,7 @@ const DialogSignup = ({ open, onClose }: DialogSignupProps) => {
               aria-invalid={Boolean(formik.errors.email)}
             />
             {formik.errors.email ? (
-              <p className="text-xs text-destructive">{formik.errors.email}</p>
+              <p className="text-destructive text-xs">{formik.errors.email}</p>
             ) : null}
           </div>
 
@@ -77,7 +71,7 @@ const DialogSignup = ({ open, onClose }: DialogSignupProps) => {
               aria-invalid={Boolean(formik.errors.password)}
             />
             {formik.errors.password ? (
-              <p className="text-xs text-destructive">
+              <p className="text-destructive text-xs">
                 {formik.errors.password}
               </p>
             ) : null}
@@ -88,7 +82,7 @@ const DialogSignup = ({ open, onClose }: DialogSignupProps) => {
           </Button>
         </form>
 
-        <DialogFooter className="text-center text-xs mt-6">
+        <DialogFooter className="mt-6 text-center text-xs">
           Dengan melanjutkan, kamu menyetujui Syarat & Ketentuan kami dan
           mengonfirmasi bahwa kamu telah membaca Kebijakan Privasi dan Cookie
           kami.

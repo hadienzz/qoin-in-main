@@ -3,6 +3,7 @@
 import { DataTable } from "@/app/dashboard/components/dashboard/data-table";
 import { FilterBar } from "@/app/dashboard/components/dashboard/filter-bar";
 import { ProductFormModal } from "../dashboard/product-form-modal";
+import { EditProductFormModal } from "../dashboard/edit-product-form-modal";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import useAddProduct from "@/hooks/dashboard/use-add-product";
@@ -75,11 +76,11 @@ export function InventoryPage({ merchant }: InventoryPageProps) {
         formik={formik}
       />
 
-      {/* Edit product modal - reuse ProductFormModal layout but bind editFormik */}
-      <ProductFormModal
+      {/* Edit product modal */}
+      <EditProductFormModal
         isOpen={openEditModal}
         onClose={handleCloseEditModal}
-        formik={editFormik as any}
+        formik={editFormik}
       />
     </div>
   );

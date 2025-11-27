@@ -81,7 +81,7 @@ const FollowedMerchantPage = () => {
               </div>
             ) : data.length > 0 ? (
               <div className="grid gap-3">
-                {data.map((merchant: any) => (
+                {data.map((merchant: Merchant) => (
                   <FollowedMerchantItem
                     key={merchant.id}
                     id={merchant.id}

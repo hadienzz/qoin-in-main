@@ -171,6 +171,7 @@ const Header = ({ openModal }: HeaderProps) => {
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => router.push("/user/followed-merchant")}
+                          className="hover:bg-[#fd6700]"
                         >
                           Toko Diikuti
                         </DropdownMenuItem>

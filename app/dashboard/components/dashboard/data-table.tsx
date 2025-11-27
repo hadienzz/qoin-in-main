@@ -20,24 +20,25 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Stock } from "@/types";
 
-interface BaseProps {
+type StockRow = Stock & {
+  onDelete?: () => void | Promise<void>;
+  onEdit?: () => void | Promise<void>;
+  onToggleDisplay?: (next: boolean) => void | Promise<void>;
+};
+
+interface BaseProps<T> {
   title?: string;
-  data: (Stock & {
-    onDelete?: () => void | Promise<void>;
-    onEdit?: () => void | Promise<void>;
-    onToggleDisplay?: (next: boolean) => void | Promise<void>;
-  })[] | null | undefined;
+  data: T[] | null | undefined;
   emptyMessage?: string;
   isLoading?: boolean;
 }
 
-export function DataTable({
+export function DataTable<T extends Stock | StockRow>({
   title,
   data,
   emptyMessage = "No data",
   isLoading = false,
-}: BaseProps) {
-  // Consumers can optionally pass callbacks via row object, e.g. onEdit/onDelete
+}: BaseProps<T>) {
   return (
     <Card>
       {title && (
@@ -81,20 +82,9 @@ export function DataTable({
                     </TableCell>
                     <TableCell className="whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <Switch
-                          onCheckedChange={async (value) => {
-                            const handler = (row as any)
-                              .onToggleDisplay as
-                              | ((next: boolean) => void | Promise<void>)
-                              | undefined;
-                            if (handler) await handler(value);
-                          }}
-                          aria-label="Toggle display"
-                        />
-                        <span className="text-xs text-muted-foreground">
-                          {Boolean((row as any).is_display)
-                            ? "Ditampilkan"
-                            : "Hanya display"}
+                        <Switch aria-label="Toggle display" />
+                        <span className="text-muted-foreground text-xs">
+                          Hanya Display
                         </span>
                       </div>
                     </TableCell>
@@ -105,12 +95,12 @@ export function DataTable({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem
-                            onClick={row.onDelete}
+                            onClick={(row as StockRow).onDelete}
                           >
                             Delete
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={row.onEdit}
+                            onClick={(row as StockRow).onEdit}
                           >
                             Edit
                           </DropdownMenuItem>

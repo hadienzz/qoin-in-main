@@ -17,7 +17,6 @@ const useStartChat = (options: UseStartChatOptions = {}) => {
   const params = useParams();
 
   const [isOpen, setIsOpen] = useState(false);
-console.log(isOpen)
   let merchantId = overrideMerchantId ?? (params?.merchantId as string | undefined);
 
   const {

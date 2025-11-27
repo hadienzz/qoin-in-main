@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { DataTable } from "@/app/dashboard/components/dashboard/data-table";
 import { FilterBar } from "@/app/dashboard/components/dashboard/filter-bar";
 import { DateRangePicker } from "@/app/dashboard/components/dashboard/date-range-picker";
 import { StatCard } from "@/app/dashboard/components/dashboard/stat-card";
@@ -102,17 +101,50 @@ export function SalesPage() {
         searchPlaceholder="Search orders..."
       />
 
-      <DataTable
-        title="Recent Orders"
-        columns={[
-          { key: "id", label: "Order ID" },
-          { key: "date", label: "Date" },
-          { key: "customer", label: "Customer" },
-          { key: "amount", label: "Amount" },
-          { key: "status", label: "Status" },
-        ]}
-        data={filteredData}
-      />
+      <div className="border border-border rounded-md overflow-hidden bg-background">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/50">
+            <tr>
+              <th className="px-4 py-2 text-left font-medium text-muted-foreground">
+                Order ID
+              </th>
+              <th className="px-4 py-2 text-left font-medium text-muted-foreground">
+                Date
+              </th>
+              <th className="px-4 py-2 text-left font-medium text-muted-foreground">
+                Customer
+              </th>
+              <th className="px-4 py-2 text-left font-medium text-muted-foreground">
+                Amount
+              </th>
+              <th className="px-4 py-2 text-left font-medium text-muted-foreground">
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredData.length === 0 && (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="px-4 py-6 text-center text-muted-foreground"
+                >
+                  No orders found
+                </td>
+              </tr>
+            )}
+            {filteredData.map((row) => (
+              <tr key={row.id} className="border-t border-border">
+                <td className="px-4 py-2 align-middle">{row.id}</td>
+                <td className="px-4 py-2 align-middle">{row.date}</td>
+                <td className="px-4 py-2 align-middle">{row.customer}</td>
+                <td className="px-4 py-2 align-middle">{row.amount}</td>
+                <td className="px-4 py-2 align-middle">{row.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

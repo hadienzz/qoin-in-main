@@ -173,7 +173,7 @@ const QoinPage = () => {
                           <ArrowDownRight className="h-6 w-6 text-red-600" />
                         </div>
                         <span className="text-xs text-[#8D8D8D] md:text-sm">
-                          Total Digunakan
+                          Total Transaksi
                         </span>
                       </div>
                       <p className="text-2xl font-bold text-[#333] md:text-3xl">

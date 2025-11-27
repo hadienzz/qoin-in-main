@@ -2,8 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormik } from "formik";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface DeleteMerchantDialogProps {
   isOpen: boolean;
@@ -37,12 +38,12 @@ export function DeleteMerchantDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Hapus Merchant</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+    <Dialog open={isOpen} onOpenChange={() => !isOpen}>
+      <DialogContent className="w-full max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Hapus Merchant</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
           <form onSubmit={formik.handleSubmit} className="space-y-4">
             <p className="text-muted-foreground text-sm">
               Ketik nama merchant
@@ -74,8 +75,8 @@ export function DeleteMerchantDialog({
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

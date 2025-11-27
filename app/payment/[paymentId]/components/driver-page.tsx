@@ -85,7 +85,8 @@ const DriverPage = ({ merchantName }: DriverPageProps) => {
     new Array(stepItem.length).fill(false),
   );
 
-  const { showArrivedDialog, setShowArrivedDialog } = useSuccessTransaction();
+  const { showArrivedDialog, setShowArrivedDialog, handleSuccess, isPending } =
+    useSuccessTransaction();
 
   const totalPrice = items.reduce(
     (acc, cur) => acc + cur.price * cur.quantity,
@@ -282,6 +283,8 @@ const DriverPage = ({ merchantName }: DriverPageProps) => {
         </div>
       </div>
       <DialogSuccess
+        handleSuccess={handleSuccess}
+        isPending={isPending}
         merchantName={merchantName}
         showArrivedDialog={showArrivedDialog}
         setShowArrivedDialog={setShowArrivedDialog}

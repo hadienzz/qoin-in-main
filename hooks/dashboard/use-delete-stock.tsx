@@ -7,7 +7,7 @@ import { toast } from "sonner";
 const useDeleteStock = () => {
   const queryClient = useQueryClient();
 
-  const { mutateAsync, isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (stockId: string) => {
       const res = await axiosInstance.delete(`/api/stocks/${stockId}`);
       return res.data;
@@ -23,7 +23,7 @@ const useDeleteStock = () => {
   });
 
   return {
-    deleteStock: mutateAsync,
+    deleteStock: mutate,
     isDeleting: isPending,
   };
 };

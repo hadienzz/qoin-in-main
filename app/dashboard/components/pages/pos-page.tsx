@@ -7,45 +7,58 @@ import { FilterBar } from "@/app/dashboard/components/dashboard/filter-bar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
+import { Merchant, Stock } from "@/types";
 
-const mockProducts = [
-  { id: "1", name: "Laptop", price: 15000000, category: "Electronics" },
-  { id: "2", name: "Mouse", price: 500000, category: "Electronics" },
-  { id: "3", name: "Keyboard", price: 1500000, category: "Electronics" },
-  { id: "4", name: "Monitor", price: 3000000, category: "Electronics" },
-  { id: "5", name: "Headphones", price: 2000000, category: "Electronics" },
-  { id: "6", name: "USB Cable", price: 100000, category: "Electronics" },
-];
+type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+};
 
-export function POSPage() {
+type POSPageProps = {
+  merchant?: Merchant | null;
+};
+
+export function POSPage({ merchant }: POSPageProps) {
   const [cart, setCart] = useState<
-    Array<{ id: string; name: string; price: number; quantity: number }>
+    Array<CartItem>
   >([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showCart, setShowCart] = useState(false);
 
-  const filteredProducts = mockProducts.filter((p) =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const products: Stock[] = merchant?.stocks ?? [];
+
+  const filteredProducts = products.filter((p) =>
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const addToCart = (product: (typeof mockProducts)[0]) => {
+  const addToCart = (product: Stock) => {
     const existingItem = cart.find((item) => item.id === product.id);
     if (existingItem) {
       setCart(
         cart.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
+            : item,
+        ),
       );
     } else {
-      setCart([...cart, { ...product, quantity: 1 }]);
+      setCart([
+        ...cart,
+        {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+        },
+      ]);
     }
   };
 
   const updateQuantity = (id: string, quantity: number) => {
     setCart(
-      cart.map((item) => (item.id === id ? { ...item, quantity } : item))
+      cart.map((item) => (item.id === id ? { ...item, quantity } : item)),
     );
   };
 
@@ -55,7 +68,7 @@ export function POSPage() {
 
   const subtotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
   const tax = subtotal * 0.1;
   const total = subtotal + tax;
@@ -67,47 +80,48 @@ export function POSPage() {
   };
 
   return (
-    <div className="p-4 md:p-8 space-y-4 md:space-y-6">
+    <div className="space-y-4 p-4 md:space-y-6 md:p-8">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+        <h1 className="text-foreground text-2xl font-bold md:text-3xl">
           Point of Sale
         </h1>
-        <p className="text-sm md:text-base text-muted-foreground mt-1">
+        <p className="text-muted-foreground mt-1 text-sm md:text-base">
           Manage your sales transactions
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-3">
         {/* Products */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="space-y-4 lg:col-span-2">
           <FilterBar
             onSearch={setSearchQuery}
             searchPlaceholder="Search products..."
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
             {filteredProducts.map((product) => (
               <Card
                 key={product.id}
-                className="hover:shadow-md transition-shadow"
+                className="transition-shadow hover:shadow-md"
               >
                 <CardContent className="p-4">
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-foreground truncate">
+                  <div className="mb-3 flex items-start justify-between">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-foreground truncate font-semibold">
                         {product.name}
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        {product.category}
+                      <p className="text-muted-foreground text-sm">
+                        {/* Category belum ada di Stock, tampilkan deskripsi pendek */}
+                        {product.description}
                       </p>
                     </div>
                   </div>
-                  <div className="flex justify-between items-center gap-2">
-                    <p className="font-bold text-sm md:text-lg">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-bold md:text-lg">
                       Rp {product.price.toLocaleString()}
                     </p>
                     <Button size="sm" onClick={() => addToCart(product)}>
-                      <Plus className="w-4 h-4" />
+                      <Plus className="h-4 w-4" />
                     </Button>
                   </div>
                 </CardContent>
@@ -116,10 +130,10 @@ export function POSPage() {
           </div>
         </div>
 
-        <div className="hidden lg:block space-y-4">
-          <div className="bg-card border border-border rounded-md p-4">
-            <h2 className="font-bold text-foreground mb-4">Shopping Cart</h2>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+        <div className="hidden space-y-4 lg:block">
+          <div className="bg-card border-border rounded-md border p-4">
+            <h2 className="text-foreground mb-4 font-bold">Shopping Cart</h2>
+            <div className="max-h-96 space-y-3 overflow-y-auto">
               {cart.length === 0 ? (
                 <p className="text-muted-foreground text-sm">Cart is empty</p>
               ) : (
@@ -156,13 +170,13 @@ export function POSPage() {
 
           {showCart && (
             <div
-              className="fixed inset-0 bg-black/50 z-40"
+              className="fixed inset-0 z-40 bg-black/50"
               onClick={() => setShowCart(false)}
             />
           )}
 
           {showCart && (
-            <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border rounded-t-lg p-4 z-50 max-h-96 overflow-y-auto">
+            <div className="bg-card border-border fixed right-0 bottom-0 left-0 z-50 max-h-96 overflow-y-auto rounded-t-lg border-t p-4">
               <div className="space-y-3">
                 {cart.length === 0 ? (
                   <p className="text-muted-foreground text-sm">Cart is empty</p>
@@ -180,7 +194,7 @@ export function POSPage() {
                   ))
                 )}
               </div>
-              <div className="mt-4 pt-4 border-t border-border">
+              <div className="border-border mt-4 border-t pt-4">
                 <POSSummary
                   subtotal={subtotal}
                   tax={tax}

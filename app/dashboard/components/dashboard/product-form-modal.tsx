@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -25,18 +26,44 @@ export function ProductFormModal({
   onClose,
   formik,
 }: ProductFormModalProps) {
+  const [showPostSubmitConfirm, setShowPostSubmitConfirm] = useState(false);
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+
+    await formik.handleSubmit();
+
+    if (!formik.isSubmitting && Object.keys(formik.errors).length === 0) {
+      // Tutup dialog utama dan tampilkan dialog konfirmasi terpisah
+      onClose();
+      setShowPostSubmitConfirm(true);
+    }
+  };
+
+  const handleContinueAdding = () => {
+    formik.resetForm();
+    setShowPostSubmitConfirm(false);
+    // Buka kembali dialog utama untuk input produk baru
+    // Parent yang pegang state isOpen harus set true lagi lewat onClose/onOpen handler.
+  };
+
+  const handleCloseAfterSubmit = () => {
+    setShowPostSubmitConfirm(false);
+  };
+
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
-    >
-      <DialogContent className="w-full max-w-md max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add Product</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={formik.handleSubmit} className="space-y-4">
+    <>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (!open) onClose();
+        }}
+      >
+        <DialogContent className="w-full max-w-md max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add Product</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-sm font-medium text-foreground">
               Product Name
@@ -98,21 +125,45 @@ export function ProductFormModal({
             aspectRatio="square"
           />
 
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" className="flex-1">
+                Save
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1 bg-transparent"
+                onClick={onClose}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showPostSubmitConfirm} onOpenChange={setShowPostSubmitConfirm}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Produk berhasil ditambahkan</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-foreground">
+            Apakah ingin menutup dialog atau lanjut menambahkan produk baru?
+          </p>
           <div className="flex gap-2 pt-4">
-            <Button type="submit" className="flex-1">
-              Save
+            <Button className="flex-1" onClick={handleContinueAdding}>
+              Lanjut isi produk baru
             </Button>
             <Button
-              type="button"
+              className="flex-1"
               variant="outline"
-              className="flex-1 bg-transparent"
-              onClick={onClose}
+              onClick={handleCloseAfterSubmit}
             >
-              Cancel
+              Tutup saja
             </Button>
           </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

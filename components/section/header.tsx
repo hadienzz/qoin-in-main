@@ -26,6 +26,7 @@ import {
 import { useRouter } from "next/navigation";
 import useLogout from "@/hooks/auth/use-logout";
 import { useEffect, useState } from "react";
+import useGetUserPoints from "@/hooks/transaction/use-get-user-points";
 
 interface HeaderProps {
   openModal?: (open: string) => void;
@@ -52,7 +53,7 @@ const Header = ({ openModal }: HeaderProps) => {
   const userData: UserPayload | undefined = data as UserPayload | undefined;
   const isAuthenticated = !!userData && !isError;
   const isHydrating = !userData && !isError && isUserLoading;
-  const qoinBalance = userData?.qoin ?? userData?.user?.qoin ?? 0;
+  const { qoinBalance } = useGetUserPoints();
   const notifCount =
     userData?.notifications ?? userData?.user?.notifications ?? 0;
   const avatarUrl = userData?.avatarUrl ?? userData?.user?.avatarUrl ?? null;
@@ -129,7 +130,7 @@ const Header = ({ openModal }: HeaderProps) => {
                     <div className="text-secondary font-semibold">
                       Qoin Saya
                     </div>
-                    <div className="text-xl font-bold">{qoinBalance}</div>
+                    <div className="text-xl font-bold text-primary">{qoinBalance}</div>
                   </div>
                 </button>
                 <button
@@ -297,7 +298,7 @@ const Header = ({ openModal }: HeaderProps) => {
                             <div className="text-secondary text-sm font-semibold">
                               Qoin Saya
                             </div>
-                            <div className="text-lg font-bold">
+                            <div className="text-lg font-bold text-primary">
                               {qoinBalance}
                             </div>
                           </div>

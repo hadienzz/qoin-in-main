@@ -11,11 +11,14 @@ interface DialogSuccessProps {
   showArrivedDialog: boolean;
   setShowArrivedDialog: (value: boolean) => void;
   merchantName?: string;
+  handleSuccess: () => void;
+  isPending: boolean;
 }
 const DialogSuccess = ({
   showArrivedDialog,
   setShowArrivedDialog,
   merchantName,
+  handleSuccess,
 }: DialogSuccessProps) => {
   const router = useRouter();
 
@@ -44,11 +47,11 @@ const DialogSuccess = ({
           </button>
           <button
             className="hover:border-primary hover:text-primary w-full rounded-full border-2 border-[#E5E7EB] py-3 text-sm font-semibold text-[#333] transition-colors duration-200 md:py-3.5 md:text-base"
-            onClick={() => {
-
-              setShowArrivedDialog(false);
-              router.push("/");
-            }}
+            onClick={
+              handleSuccess
+              // setShowArrivedDialog(false);
+              // router.push("/");
+            }
           >
             Lewati
           </button>

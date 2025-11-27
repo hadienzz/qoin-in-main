@@ -31,7 +31,7 @@ const ImageHeroContent = ({
   CTAText = "Eksplor Yuk",
   onCTAClick,
 }: ImageHeroContentProps) => (
-  <div className="px-4 md:px-6 lg:px-[41px] py-6 md:py-8 lg:pb-[29px] lg:pt-0 z-1000">
+  <div className="px-4 md:px-6 lg:px-[41px] py-6 md:py-8 lg:pb-[29px] lg:pt-0 z-10">
     <h1 className="font-extrabold text-3xl md:text-4xl lg:text-[50px] text-white leading-tight mb-3 md:mb-4 lg:mb-5">
       {title}
     </h1>

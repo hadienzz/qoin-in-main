@@ -19,9 +19,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 const PaymentPage = () => {
   const [grandTotal, setGrandTotal] = useState<string | null>(null);
   const [deliveryMethod, setDeliveryMethod] = useState<"delivery" | "pickup">(
-    "delivery"
+    "delivery",
   );
-  
+
   const { paymentId } = useParams();
   const { openModal } = useOpenModal();
   const {
@@ -40,7 +40,7 @@ const PaymentPage = () => {
     const total = localStorage.getItem("grandTotal");
     setGrandTotal(total);
   }, []);
-
+  
   return (
     <>
       <Header openModal={openModal} />
@@ -54,7 +54,7 @@ const PaymentPage = () => {
               }
               className="w-full"
             >
-              <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+              <TabsList className="mx-auto mb-8 grid w-full max-w-md grid-cols-2">
                 <TabsTrigger value="delivery" className="text-base">
                   Diantar
                 </TabsTrigger>

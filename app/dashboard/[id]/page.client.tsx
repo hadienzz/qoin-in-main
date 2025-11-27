@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Sidebar } from "@/app/dashboard/components/dashboard/sidebar";
 import useChangePage from "@/hooks/dashboard/use-change-page";
 import { OverviewPage } from "../components/pages/overview-page";
@@ -20,13 +21,14 @@ export default function DashboardClient({
   const { activePage, handlePage } = useChangePage();
   const { isSidebarOpen, toggleSidebar } = useHandleSidebar();
   const { merchant } = useGetMerchantById(merchantId);
+  const [showPremiumBanner, setShowPremiumBanner] = useState(true);
 
   let content;
 
   if (activePage === "overview") {
     content = <OverviewPage />;
   } else if (activePage === "pos") {
-    content = <POSPage />;
+    content = <POSPage merchant={merchant} />;
   } else if (activePage === "inventory") {
     content = <InventoryPage merchant={merchant} />;
   } else if (activePage === "sales") {
@@ -77,6 +79,25 @@ export default function DashboardClient({
           </h1>
           <div className="w-10" />
         </div>
+        {showPremiumBanner && (
+          <div className="bg-gradient-to-r from-yellow-400/10 via-amber-500/10 to-yellow-300/10 border-b border-amber-500/30 px-4 py-3 flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold text-amber-500">
+                Silakan bergabung menjadi Premium
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Dapatkan insight penjualan lebih detail, fitur eksklusif, dan support prioritas untuk mengembangkan bisnis Anda.
+              </p>
+            </div>
+            <button
+              type="button"
+              className="text-muted-foreground hover:text-foreground ml-2"
+              onClick={() => setShowPremiumBanner(false)}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
         <div className="flex-1 overflow-auto">{content}</div>
       </main>
     </div>

@@ -75,3 +75,21 @@ export interface LikedMerchant {
     name: string;
   };
 }
+
+export interface TransactionData {
+  id: string;
+  payment_id: string;
+  stock_id: string;
+  user_id: string;
+  merchant_id: string;
+  quantity: number;
+  total_price: number;
+  status: string;
+  merchant?: {
+    name: string;
+  };
+  transaction_type?: "earning" | "spending";
+  description?: string;
+  created_at: string; // tanggal transaksi dilakukan
+  updated_at: string;
+}

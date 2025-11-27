@@ -7,8 +7,13 @@ import {
   TrendingUp,
   ItalicIcon as AnalyticsIcon,
   Settings,
+  Trash,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import useGetUserMerchant from "@/hooks/merchant/use-get-user-merchant";
+import useDeleteMerchant from "@/hooks/merchant/use-delete-merchant";
+import { DeleteMerchantDialog } from "./delete-merchant-dialog";
 
 type PageId = "overview" | "pos" | "inventory" | "sales" | "analytics";
 
@@ -18,7 +23,27 @@ interface SidebarProps {
 }
 
 export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
-  const menuItems: Array<{ id: PageId; label: string; icon: React.ComponentType<{ className?: string }> }> = [
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const { merchant } = useGetUserMerchant();
+  const { deleteMerchant, isDeletingMerchant } = useDeleteMerchant();
+
+  const currentMerchant = merchant?.data?.[0];
+
+  const handleDeleteClick = () => {
+    setIsDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!currentMerchant) return;
+    await deleteMerchant(currentMerchant.id);
+    setIsDeleteOpen(false);
+  };
+
+  const menuItems: Array<{
+    id: PageId;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }> = [
     { id: "overview", label: "Overview", icon: BarChart3 },
     { id: "pos", label: "POS", icon: ShoppingCart },
     { id: "inventory", label: "Inventory", icon: Package },
@@ -27,15 +52,15 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
   ];
 
   return (
-    <aside className="w-64 bg-card border-r border-border flex flex-col h-screen">
+    <aside className="bg-card border-border flex h-screen w-64 flex-col border-r">
       {/* Header */}
-      <div className="p-6 border-b border-border">
-        <h1 className="text-2xl font-bold text-foreground">Merchant</h1>
-        <p className="text-sm text-muted-foreground">Dashboard</p>
+      <div className="border-border border-b p-6">
+        <h1 className="text-foreground text-2xl font-bold">Merchant</h1>
+        <p className="text-muted-foreground text-sm">Dashboard</p>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 space-y-2 overflow-y-auto p-4">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentPage === item.id;
@@ -50,23 +75,42 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                   : "text-muted-foreground hover:text-primary"
               }`}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <Icon className="h-5 w-5 flex-shrink-0" />
               <span className="truncate">{item.label}</span>
             </Button>
           );
         })}
       </nav>
 
+      <div className="p-4 cursor-pointer">
+        <div
+          className="group flex items-center gap-3 rounded-md hover:bg-slate-200 p-4"
+          onClick={handleDeleteClick}
+        >
+          <Trash className="size-5 group-hover:text-red-600" />
+          <p>Delete Merchant</p>
+        </div>
+      </div>
       {/* Footer */}
-      <div className="p-4 border-t border-border">
+      <div className="border-border border-t p-4">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-3 text-muted-foreground hover:text-primary"
+          className="text-muted-foreground hover:text-primary w-full justify-start gap-3"
         >
-          <Settings className="w-5 h-5 flex-shrink-0" />
+          <Settings className="h-5 w-5 flex-shrink-0" />
           <span className="truncate">Settings</span>
         </Button>
       </div>
+
+      {currentMerchant && (
+        <DeleteMerchantDialog
+          isOpen={isDeleteOpen}
+          merchantName={currentMerchant.name}
+          isDeleting={isDeletingMerchant}
+          onConfirm={handleConfirmDelete}
+          onClose={() => setIsDeleteOpen(false)}
+        />
+      )}
     </aside>
   );
 }

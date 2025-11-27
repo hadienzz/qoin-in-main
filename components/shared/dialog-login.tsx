@@ -19,9 +19,14 @@ interface DialogLoginProps {
 }
 
 const DialogLogin = ({ open, onClose, openModal }: DialogLoginProps) => {
+  const handleClick = () => {
+    alert(
+      "Fitur ini masih dalam pengembangan. Silahkan login menggunakan email",
+    );
+  };
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="z-1000">
         <DialogHeader>
           <Image
             src={"/logo.svg"}
@@ -30,24 +35,25 @@ const DialogLogin = ({ open, onClose, openModal }: DialogLoginProps) => {
             alt="Logo"
             className="mx-auto"
           />
-          <DialogTitle className="font-bold text-base lg:text-3xl text-secondary text-center">
+          <DialogTitle className="text-secondary text-center text-base font-bold lg:text-3xl">
             Masuk dulu yuk, biar bisa dukung UMKM favoritmu
           </DialogTitle>
         </DialogHeader>
         <BorderButton
-          className="lg:w-100 w-70 mx-auto text-sm md:text-md"
+          className="md:text-md mx-auto w-70 text-sm lg:w-100"
           icon={<GoogleIcon />}
+          onClick={handleClick}
         >
           Lanjut dengan google
         </BorderButton>
         <BorderButton
           onClick={() => openModal("signin")}
-          className="lg:w-100 w-70 mx-auto text-sm md:text-base"
-          icon={<Mail />}
+          className="mx-auto w-70 text-sm md:text-base lg:w-100"
+          icon={<Mail className="text-white" />}
         >
           Lanjut dengan email
         </BorderButton>
-        <DialogFooter className="text-center text-xs mt-8 flex !flex-col gap-2">
+        <DialogFooter className="mt-8 flex !flex-col gap-2 text-center text-xs">
           Dengan melanjutkan, kamu menyetujui Syarat & Ketentuan kami dan
           mengonfirmasi bahwa kamu telah membaca Kebijakan Privasi dan Cookie
           kami.
@@ -56,7 +62,7 @@ const DialogLogin = ({ open, onClose, openModal }: DialogLoginProps) => {
             <button
               type="button"
               onClick={() => openModal("signup")}
-              className="text-primary underline underline-offset-4 hover:opacity-90 mx-2 cursor-pointer"
+              className="text-primary mx-2 cursor-pointer underline underline-offset-4 hover:opacity-90"
             >
               Daftar
             </button>

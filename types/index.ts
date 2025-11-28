@@ -36,6 +36,7 @@ export interface Merchant {
   longitude: number;
   google_map_url: string | null;
   iframe_map_url: string | null;
+  is_transaction_active: boolean;
   // Relations
   stocks: Stock[];
   ratings: any[]; // bisa buat interface detail kalau dibutuhkan

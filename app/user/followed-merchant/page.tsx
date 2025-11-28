@@ -25,9 +25,9 @@ const FollowedMerchantItem = ({
 
   return (
     <Card className="cursor-pointer transition-shadow hover:shadow-md">
-      <CardContent className="flex items-center justify-between gap-4 pt-6">
+      <CardContent className="items-center gap-4 pt-3 lg:flex">
         <div
-          className="flex items-center gap-4"
+          className="flex flex-1 items-center gap-4"
           onClick={() => router.push(`/merchant/${id}`)}
         >
           <div className="bg-muted relative h-14 w-14 overflow-hidden rounded-full">
@@ -41,15 +41,19 @@ const FollowedMerchantItem = ({
           </div>
           <div className="flex flex-col">
             <span className="text-sm leading-tight font-semibold">{name}</span>
-            <span className="text-muted-foreground text-xs">ID: {id}</span>
+            <span className="mt-2 hidden text-sm leading-tight text-[#333] lg:block">
+              {id}
+            </span>
           </div>
         </div>
-        <Button
-          onClick={() => router.push(`/merchant/${id}`)}
-          className="text-base text-white"
-        >
-          Lihat Toko &rarr;
-        </Button>
+        <div>
+          <Button
+            onClick={() => router.push(`/merchant/${id}`)}
+            className="mt-4 w-full text-base text-white"
+          >
+            Lihat Toko &rarr;
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

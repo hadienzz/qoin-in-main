@@ -21,10 +21,10 @@ type MerchantItemProps = Pick<
 const MerchantItem = ({ id, name, profilePhotoUrl }: MerchantItemProps) => {
   const router = useRouter();
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="pt-6 flex items-center justify-between gap-4">
+    <Card className="transition-shadow hover:shadow-md">
+      <CardContent className="items-center justify-between gap-4 pt-6 lg:flex">
         <div className="flex items-center gap-4">
-          <div className="relative h-14 w-14 rounded-full overflow-hidden bg-muted">
+          <div className="bg-muted relative h-14 w-14 overflow-hidden rounded-full">
             <Image
               src={profilePhotoUrl ?? "/images/profile-img.png"}
               alt={`Merchant ${name}`}
@@ -34,21 +34,23 @@ const MerchantItem = ({ id, name, profilePhotoUrl }: MerchantItemProps) => {
             />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold leading-tight">{name}</span>
-            <span className="text-xs text-muted-foreground">ID: {id}</span>
+            <span className="text-sm leading-tight font-semibold">{name}</span>
+            <span className="text-muted-foreground hidden text-xs lg:block">
+              ID: {id}
+            </span>
           </div>
         </div>
-        <div className="space-x-4  ">
+        <div className="mt-5 w-full space-y-4 space-x-4 lg:w-auto">
           <Button
             onClick={() => router.push(`/merchant/${id}`)}
-            className="text-base text-white"
+            className="w-full text-base text-white"
           >
             Lihat Toko →
           </Button>
 
           <Button
             onClick={() => router.push(`/dashboard/${id}`)}
-            className="text-base text-white"
+            className="flex w-full text-base text-white lg:w-auto"
           >
             Lihat Dashboard →
           </Button>
@@ -91,7 +93,7 @@ const MyMerchantPage = () => {
             {isLoading ? (
               <div className="flex items-center gap-4">
                 <Skeleton className="h-14 w-14 rounded-full" />
-                <div className="space-y-2 w-48">
+                <div className="w-48 space-y-2">
                   <Skeleton className="h-4 w-40" />
                   <Skeleton className="h-3 w-28" />
                 </div>
@@ -109,7 +111,7 @@ const MyMerchantPage = () => {
                 ))}
               </div>
             ) : (
-              <div className="lg:text-lg text-muted-foreground">
+              <div className="text-muted-foreground lg:text-lg">
                 <p>Anda tidak mempunyai toko, silahkan daftar disini</p>
                 <Button
                   className="mt-4"

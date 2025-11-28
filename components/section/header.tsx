@@ -130,7 +130,9 @@ const Header = ({ openModal }: HeaderProps) => {
                     <div className="text-secondary font-semibold">
                       Qoin Saya
                     </div>
-                    <div className="text-xl font-bold text-primary">{qoinBalance}</div>
+                    <div className="text-primary text-xl font-bold">
+                      {qoinBalance}
+                    </div>
                   </div>
                 </button>
                 <button
@@ -268,6 +270,15 @@ const Header = ({ openModal }: HeaderProps) => {
                     </li>
                     <li>
                       <Link
+                        href="/user/followed-merchant"
+                        onClick={() => setIsSheetOpen(false)}
+                        className="hover:text-primary transition-colors"
+                      >
+                        Toko Diikutis
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
                         href="/top-100"
                         onClick={() => setIsSheetOpen(false)}
                         className="hover:text-primary transition-colors"
@@ -298,7 +309,7 @@ const Header = ({ openModal }: HeaderProps) => {
                             <div className="text-secondary text-sm font-semibold">
                               Qoin Saya
                             </div>
-                            <div className="text-lg font-bold text-primary">
+                            <div className="text-primary text-lg font-bold">
                               {qoinBalance}
                             </div>
                           </div>
@@ -345,6 +356,13 @@ const Header = ({ openModal }: HeaderProps) => {
                               }}
                             >
                               Toko Saya
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                router.push("/user/followed-merchant")
+                              }
+                            >
+                              Toko Diikuti
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => {

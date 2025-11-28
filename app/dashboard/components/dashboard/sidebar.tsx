@@ -14,6 +14,7 @@ import { useState } from "react";
 import useGetUserMerchant from "@/hooks/merchant/use-get-user-merchant";
 import useDeleteMerchant from "@/hooks/merchant/use-delete-merchant";
 import { DeleteMerchantDialog } from "./delete-merchant-dialog";
+import { useRouter } from "next/navigation";
 
 type PageId = "overview" | "pos" | "inventory" | "sales" | "analytics";
 
@@ -23,6 +24,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
+  const router = useRouter();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const { merchant } = useGetUserMerchant();
   const { deleteMerchant, isDeletingMerchant } = useDeleteMerchant();
@@ -82,9 +84,9 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
         })}
       </nav>
 
-      <div className="p-4 cursor-pointer">
+      <div className="cursor-pointer p-4">
         <div
-          className="group flex items-center gap-3 rounded-md hover:bg-slate-200 p-4"
+          className="group flex items-center gap-3 rounded-md p-4 hover:bg-slate-200"
           onClick={handleDeleteClick}
         >
           <Trash className="size-5 group-hover:text-red-600" />
@@ -96,6 +98,11 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
         <Button
           variant="ghost"
           className="text-muted-foreground hover:text-primary w-full justify-start gap-3"
+          onClick={() => {
+            if (currentMerchant) {
+              router.push(`/dashboard/${currentMerchant.id}/settings`);
+            }
+          }}
         >
           <Settings className="h-5 w-5 flex-shrink-0" />
           <span className="truncate">Settings</span>

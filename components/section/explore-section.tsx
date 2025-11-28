@@ -16,7 +16,7 @@ const ExploreSection = ({
     <Section>
       <PageContainer>
         <ProductSection
-          title="Eksplor UMKM di sekitarmu"
+          title="Lokal banget, Deket banget"
           description="Temuin hidden gem deket rumah kamu"
           isExplore
           displayMerchant={displayMerchant}
